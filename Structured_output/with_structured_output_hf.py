@@ -1,32 +1,17 @@
 from langchain_openai import ChatOpenAI
-from typing import Optional, Literal
-from pydantic import BaseModel, Field
+from typing import Optional,Literal
+from pydantic import BaseModel,Field
 from dotenv import load_dotenv
-
 load_dotenv()
 model = ChatOpenAI(model="gpt-4o", temperature=0)
 
-
 class Review(BaseModel):
-    key_themes: list[str] = Field(
-        description="A list of the key themes mentioned in the review"
-    )
-    summary: str = Field(
-        description="The overall sentiment of the review, either 'positive', 'negative', or 'neutral'"
-    )
-    sentiment: Literal["positive", "negative", "neutral"] = Field(
-        description="The overall sentiment of the review, either 'positive', 'negative', or 'neutral'"
-    )
-    pros: Optional[list[str]] = Field(
-        default=None, description="A list of all the pros inside the list"
-    )
-    cons: Optional[list[str]] = Field(
-        default=None, description="A list of all the cons inside the list"
-    )
-    name: Optional[str] = Field(
-        default=None, description="The name of the reviewer if mentioned in the review"
-    )
-
+    key_themes:list[str]= Field(description="A list of the key themes mentioned in the review")
+    summary: str = Field(description="The overall sentiment of the review, either 'positive', 'negative', or 'neutral'")
+    sentiment: Literal["positive", "negative", "neutral"] = Field(description="The overall sentiment of the review, either 'positive', 'negative', or 'neutral'")
+    pros: Optional[list[str]]= Field(default=None, description="A list of all the pros inside the list")
+    cons: Optional[list[str]]= Field(default=None,description="A list of all the cons inside the list")
+    name: Optional[str]= Field(default=None, description="The name of the reviewer if mentioned in the review")
 
 structured_output_model = model.with_structured_output(Review)
 
@@ -53,3 +38,4 @@ print(result)
 # print(result["sentiment"])
 # print(result["pros"])
 # print(result["cons"])
+

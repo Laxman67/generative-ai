@@ -6,29 +6,43 @@ from dotenv import load_dotenv
 load_dotenv()
 model = ChatOpenAI(model="gpt-4o", temperature=0)
 
+review_json_schema = {
+    "title": "Review",
+    "description": "A structured output schema for summarizing product reviews",
+    "type": "object",
+    "properties": {
+        "key_themes": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "write down all  list of the key themes mentioned in the review",
+        },
+        "summary": {
+            "type": "string",
+            "description": "write down a brief summary of the review in two line",
+        },
+        "sentiment": {
+            "type": "string",
+            "enum": ["positive", "negative", "neutral"],
+            "description": "write down the overall sentiment of the review, either 'positive', 'negative', or 'neutral'",
+        },
+        "pros": {
+            "type": ["array", "null"],
+            "items": {"type": "string"},
+            "description": "write down a list of all the pros inside the list",
+        },
+        "cons": {
+            "type": ["array", "null"],
+            "items": {"type": "string"},
+            "description": "write down a list of all the cons inside the list",
+        },
+        "name": {
+            "type": ["string", "null"],
+            "description": "write down the name of the reviewer if mentioned in the review",
+        },
+    },
+}
 
-class Review(BaseModel):
-    key_themes: list[str] = Field(
-        description="A list of the key themes mentioned in the review"
-    )
-    summary: str = Field(
-        description="The overall sentiment of the review, either 'positive', 'negative', or 'neutral'"
-    )
-    sentiment: Literal["positive", "negative", "neutral"] = Field(
-        description="The overall sentiment of the review, either 'positive', 'negative', or 'neutral'"
-    )
-    pros: Optional[list[str]] = Field(
-        default=None, description="A list of all the pros inside the list"
-    )
-    cons: Optional[list[str]] = Field(
-        default=None, description="A list of all the cons inside the list"
-    )
-    name: Optional[str] = Field(
-        default=None, description="The name of the reviewer if mentioned in the review"
-    )
-
-
-structured_output_model = model.with_structured_output(Review)
+structured_output_model = model.with_structured_output(review_json_schema)
 
 result = structured_output_model.invoke("""I recently upgraded to the Samsung Galaxy S24 Ultra, and I must say, it’s an absolute powerhouse! The Snapdragon 8 Gen 3 processor makes everything lightning fast—whether I’m gaming, multitasking, or editing photos. The 5000mAh battery easily lasts a full day even with heavy use, and the 45W fast charging is a lifesaver.
 
